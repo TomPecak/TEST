@@ -25,11 +25,19 @@ ApplicationWindow {
     property real dockShortSize: 100
     property real dockMargin: 15 // Odstęp od krawędzi ekranu
 
+    AvailableFonts{
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+
+        Component.onCompleted: {
+        //SystemMask.setRectMask(x, y, width, height)
+    }
+    }
 
     Rectangle {
         id: square
         anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.top: parent.top
         width: 200
         height: 200
 
@@ -45,7 +53,7 @@ ApplicationWindow {
             to: 360
             duration: 2000
             loops: Animation.Infinite
-            running: true
+            running: false //true
         }
 
         MouseArea {
@@ -94,7 +102,7 @@ ApplicationWindow {
                 SystemMask.setFullMask()
             } else {
                 // Gdy puszczamy (lub gdy trwa animacja przyklejania), maska podąża za dockiem
-                SystemMask.setRectMask(x, y, width, height)
+                //SystemMask.setRectMask(x, y, width, height)
             }
         }
 

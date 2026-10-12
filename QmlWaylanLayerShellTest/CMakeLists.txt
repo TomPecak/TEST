@@ -22,6 +22,7 @@ qt_add_qml_module(appQmlWaylanLayerShellTest
     URI QmlWaylanLayerShellTest
     QML_FILES
         Main.qml
+        QML_FILES AvailableFonts.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

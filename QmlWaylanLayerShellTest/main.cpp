@@ -20,7 +20,7 @@ public:
     // Wywoływane, gdy puszczamy dock - maska ogranicza się do jego rozmiarów
     Q_INVOKABLE void setRectMask(int x, int y, int w, int h) {
         if (m_window) {
-            //m_window->setMask(QRegion(x, y, w, h));
+            m_window->setMask(QRegion(x, y, w, h));
         }
     }
 
@@ -28,7 +28,7 @@ public:
     Q_INVOKABLE void setFullMask() {
         if (m_window) {
             // Pusty QRegion zdejmuje maskę, przywracając pełny obszar okna
-            //m_window->setMask(QRegion());
+            m_window->setMask(QRegion());
         }
     }
 };
