@@ -1,3 +1,4 @@
+
 import { Button, VerticalBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
@@ -9,6 +10,25 @@ export component AppWindow inherits Window {
 
     // 1. Właściwość, która będzie się zmieniać (zamiast touch.has-hover)
     property <bool> anim_state: false;
+
+        Rectangle {
+        width: 250px;
+        height: 250px;
+        background: red;
+
+        // Wyśrodkowanie elementu w oknie parenta
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+
+        // Określenie punktu obrotu (dokładny środek kwadratu)
+        transform-origin: { x: self.width / 2, y: self.height / 2 };
+
+        // Obliczanie kąta obrotu na podstawie czasu działania aplikacji
+        // animation-tick() zwraca czas w milisekundach.
+        // Dzielenie przez 10ms określa prędkość (im mniejsza liczba, tym szybszy obrót)
+        // mod 360 zapobiega przepełnieniu wartości kąta
+        transform-rotation: mod(animation-tick() / 10ms, 360) * 1deg;
+    }
 
     // 2. Timer, który działa cały czas i przełącza stan co 500ms
     Timer {
