@@ -1,0 +1,33 @@
+// Copyright (C) 2024 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
+syntax = "proto3";
+
+package qtgrpc.examples;
+import "google/protobuf/empty.proto";
+
+//! [Proto types]
+message SpeedMsg {
+    int32 speed = 1;
+}
+
+message RpmMsg {
+    int32 rpm = 1;
+}
+
+// ZMIANA: Dodano nową wiadomość dla żądania
+message AutonomyRequest {
+    int64 client_timestamp = 1;
+}
+
+message AutonomyMsg {
+    int32 autonomy = 1;
+    int64 server_timestamp = 2; // ZMIANA: Dodano pole czasu serwera
+}
+
+service VehicleService {
+    rpc getSpeedStream(google.protobuf.Empty) returns (stream SpeedMsg) {}
+    rpc getRpmStream(google.protobuf.Empty) returns (stream RpmMsg) {}
+    // ZMIANA: Zastąpiono google.protobuf.Empty nową wiadomością AutonomyRequest
+    rpc getAutonomy(AutonomyRequest) returns (AutonomyMsg) {}
+}
+//! [Proto types]
