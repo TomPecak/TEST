@@ -2,8 +2,8 @@
 
 ## Run Qt gRPC examples, protobuf on linux
 ```bash
-sudo apt install protobuf-compiler libprotobuf-dev grpc++ libgrpc++-dev
-sudo apt install libgrpc++-dev protobuf-compiler-grpc
+sudo apt update
+sudo apt install protobuf-compiler libprotobuf-dev libgrpc++-dev protobuf-compiler-grpc
 ```
 
 ## Run 

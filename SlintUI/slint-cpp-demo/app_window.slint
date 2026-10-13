@@ -1,0 +1,88 @@
+
+import { Button, VerticalBox } from "std-widgets.slint";
+
+export component AppWindow inherits Window {
+    width: 600px;
+    height: 600px;
+
+    in-out property <string> message: "Witaj ze Slint w C++!";
+    callback button_clicked();
+
+    // 1. Właściwość, która będzie się zmieniać (zamiast touch.has-hover)
+    property <bool> anim_state: false;
+
+        Rectangle {
+        width: 250px;
+        height: 250px;
+        background: red;
+
+        // Wyśrodkowanie elementu w oknie parenta
+        x: (parent.width - self.width) / 2;
+        y: (parent.height - self.height) / 2;
+
+        // Określenie punktu obrotu (dokładny środek kwadratu)
+        transform-origin: { x: self.width / 2, y: self.height / 2 };
+
+        // Obliczanie kąta obrotu na podstawie czasu działania aplikacji
+        // animation-tick() zwraca czas w milisekundach.
+        // Dzielenie przez 10ms określa prędkość (im mniejsza liczba, tym szybszy obrót)
+        // mod 360 zapobiega przepełnieniu wartości kąta
+        transform-rotation: mod(animation-tick() / 10ms, 360) * 1deg;
+    }
+
+    // 2. Timer, który działa cały czas i przełącza stan co 500ms
+    Timer {
+        interval: 500ms; // Czas po którym animacja zmienia kierunek
+        running: true;
+        triggered => { root.anim_state = !root.anim_state; }
+    }
+
+    VerticalBox {
+        alignment: center;
+        spacing: 20px;
+
+        // Zwykły prostokąt jako kontener (zamiast TouchArea)
+        Rectangle {
+            width: 150px;
+            height: 150px;
+
+            Rectangle {
+                x: (parent.width - self.width) / 2;
+                y: (parent.height - self.height) / 2;
+
+                // 3. Uzależniamy wartości od naszego Timera (anim_state)
+                width: root.anim_state ? 150px : 100px;
+                height: self.width;
+
+                background: root.anim_state ? orange : red;
+                border-radius: root.anim_state ? (self.width / 2) : 0px;
+
+                // 4. Natywne animacje płynnie przechodzą między stanami
+                animate width, height {
+                    duration: 400ms;
+                    easing: ease-in-out;
+                }
+                animate background {
+                    duration: 400ms; // Ujednoliciłem czas z resztą, żeby płynnie pulsowało
+                }
+                animate border-radius {
+                    duration: 400ms;
+                    easing: ease-out;
+                }
+            }
+        }
+
+        Text {
+            text: root.message;
+            font-size: 18px;
+            horizontal-alignment: center;
+        }
+
+        Button {
+            text: "Kliknij mnie!";
+            clicked => {
+                root.button_clicked();
+            }
+        }
+    }
+}
