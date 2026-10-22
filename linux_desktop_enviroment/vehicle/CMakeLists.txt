@@ -8,7 +8,7 @@ if(NOT DEFINED INSTALL_EXAMPLESDIR)
     set(INSTALL_EXAMPLESDIR "examples")
 endif()
 
-set(Protobuf_PROTOC_EXECUTABLE "/usr/bin/protoc")
+#set(Protobuf_PROTOC_EXECUTABLE "/usr/bin/protoc")
 
 set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}/grpc/vehicle")
 
