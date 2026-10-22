@@ -1,0 +1,29 @@
+import QtQuick
+import QtQuick.Controls.impl
+
+import TestFiles
+
+// Icon of the Lumen UI.
+//
+// tinted: true (default) - symbolic UI icon shipped with the frontend (assets/icons/<name>.svg),
+//         tinted with the text color of the theme, so it is readable on light and dark surfaces
+//         and does not depend on the icon theme of the user (e.g. Oxygen has no symbolic icons)
+// tinted: false - colorful application icon taken from the icon theme of the user
+IconImage {
+    id: icon
+
+    property string iconName
+    property int size: 16
+    property bool tinted: true
+    property color tint: Theme.textPrimary
+
+    width: size
+    height: size
+    sourceSize: Qt.size(size, size)
+
+    // Colorful icons come through the icon engine of the platform (see IconProvider.h)
+    source: iconName.length === 0 ? ""
+          : tinted ? Qt.resolvedUrl("../assets/icons/" + iconName + ".svg")
+          : "image://icon/" + iconName + (Files.darkIcons ? "?dark" : "?light")
+    color: tinted ? tint : "transparent"
+}
