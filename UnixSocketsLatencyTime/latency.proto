@@ -1,0 +1,12 @@
+// Ten sam test co latency.capnp, dla gRPC: wywołanie zwraca otrzymany numer.
+syntax = "proto3";
+
+package latency;
+
+message PingMsg {
+    uint64 seq = 1;
+}
+
+service PingService {
+    rpc ping(PingMsg) returns (PingMsg) {}
+}
