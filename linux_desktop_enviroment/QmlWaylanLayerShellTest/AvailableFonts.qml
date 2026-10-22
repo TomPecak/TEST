@@ -7,6 +7,7 @@ Rectangle {
 
     ListView {
         anchors.fill: parent
+        flickDeceleration: 0.0001
 //! [model]
         model: Qt.fontFamilies()
 //! [model]

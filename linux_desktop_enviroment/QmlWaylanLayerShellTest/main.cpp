@@ -1,36 +1,81 @@
 #include <QGuiApplication>
+#include <QPointer>
 #include <QQmlApplicationEngine>
-#include <QQmlContext>
-#include <QWindow>
+#include <QQuickItem>
+#include <QQuickWindow>
 #include <QRegion>
+#include <qqml.h>
 #include <LayerShellQt/Window>
 
-// Klasa pomocnicza udostępniona do QML
-class MaskHelper : public QObject {
+// Jeden na okno, tworzony automatycznie przez pierwszy MaskArea.
+// Raz na klatkę skleja prostokąty wszystkich widocznych MaskArea w maskę okna.
+class MaskTracker : public QObject {
     Q_OBJECT
-    QWindow* m_window = nullptr;
-
 public:
-    explicit MaskHelper(QObject *parent = nullptr) : QObject(parent) {}
-
-    void setWindow(QWindow* window) {
-        m_window = window;
+    static MaskTracker *forWindow(QQuickWindow *window) {
+        auto *tracker = window->findChild<MaskTracker *>(QString(), Qt::FindDirectChildrenOnly);
+        return tracker ? tracker : new MaskTracker(window);
     }
 
-    // Wywoływane, gdy puszczamy dock - maska ogranicza się do jego rozmiarów
-    Q_INVOKABLE void setRectMask(int x, int y, int w, int h) {
-        if (m_window) {
-            m_window->setMask(QRegion(x, y, w, h));
+    void add(QQuickItem *item) { m_areas.append(item); }
+    void remove(QQuickItem *item) { m_areas.removeOne(item); }
+
+private:
+    explicit MaskTracker(QQuickWindow *window) : QObject(window), m_window(window) {
+        // afterAnimating: wątek GUI, raz na renderowaną klatkę
+        connect(window, &QQuickWindow::afterAnimating, this, &MaskTracker::update);
+    }
+
+    void update() {
+        QRegion region;
+        for (QQuickItem *item : std::as_const(m_areas)) {
+            if (item->isVisible()) {
+                // mapRectToScene uwzględnia pozycje przodków i transformacje (scale, translate)
+                region += item->mapRectToScene(QRectF(0, 0, item->width(), item->height()))
+                              .toAlignedRect();
+            }
         }
+
+        // Pusty QRegion zdejmuje maskę (całe okno łapie zdarzenia),
+        // więc gdy nic nie jest widoczne, dajemy region poza oknem
+        if (region.isEmpty()) {
+            region = QRegion(-1, -1, 1, 1);
+        }
+
+        if (region == m_last) return;
+        m_last = region;
+        m_window->setMask(region);
+        static int updateConut = 0;
+        qDebug() << "[ INFO ] Updated Mask: " << updateConut++;
     }
 
-    // Wywoływane, gdy łapiemy dock - zdejmujemy maskę, całe okno łapie zdarzenia
-    Q_INVOKABLE void setFullMask() {
-        if (m_window) {
-            // Pusty QRegion zdejmuje maskę, przywracając pełny obszar okna
-            m_window->setMask(QRegion());
-        }
+    QQuickWindow *m_window;
+    QList<QQuickItem *> m_areas;
+    QRegion m_last;
+};
+
+// Używane w QML jak MouseArea: obszar, który wypełnia, łapie zdarzenia myszy
+class MaskArea : public QQuickItem {
+    Q_OBJECT
+public:
+    using QQuickItem::QQuickItem;
+
+    ~MaskArea() override {
+        if (m_tracker) m_tracker->remove(this);
     }
+
+protected:
+    void itemChange(ItemChange change, const ItemChangeData &data) override {
+        if (change == ItemSceneChange) {
+            if (m_tracker) m_tracker->remove(this);
+            m_tracker = data.window ? MaskTracker::forWindow(data.window) : nullptr;
+            if (m_tracker) m_tracker->add(this);
+        }
+        QQuickItem::itemChange(change, data);
+    }
+
+private:
+    QPointer<MaskTracker> m_tracker;
 };
 
 int main(int argc, char *argv[])
@@ -38,23 +83,21 @@ int main(int argc, char *argv[])
     qputenv("QT_WAYLAND_SHELL_INTEGRATION", "layer-shell");
 
     QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine;
 
-    // Tworzymy helpera i udostępniamy w QML jako "SystemMask"
-    MaskHelper maskHelper;
-    engine.rootContext()->setContextProperty("SystemMask", &maskHelper);
+    // Osobny moduł, bo klasa siedzi w main.cpp (QML_ELEMENT wymaga nagłówka)
+    qmlRegisterType<MaskArea>("Mask", 1, 0, "MaskArea");
+
+    QQmlApplicationEngine engine;
 
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,
         &app,
-        [&maskHelper](QObject *obj, const QUrl &objUrl) {
+        [](QObject *obj, const QUrl &objUrl) {
             if (!obj) return;
 
             QWindow *window = qobject_cast<QWindow *>(obj);
             if (window) {
-                maskHelper.setWindow(window);
-
                 LayerShellQt::Window *lsWindow = LayerShellQt::Window::get(window);
 
                 // UWAGA: Aby móc przesuwać po całym ekranie, okno musi zajmować cały ekran!
@@ -66,8 +109,8 @@ int main(int argc, char *argv[])
                     ));
 
                 // Ustawiamy jako nakładkę (Overlay/Top), żeby było nad innymi oknami
-                //lsWindow->setLayer(LayerShellQt::Window::LayerTop);
-                lsWindow->setLayer(LayerShellQt::Window::LayerBottom);
+                lsWindow->setLayer(LayerShellQt::Window::LayerTop);
+                //lsWindow->setLayer(LayerShellQt::Window::LayerBottom);
 
                 // UWAGA 2: Okno pełnoekranowe NIE MOŻE mieć strefy ekskluzywnej.
                 // Inaczej KWin/Wayland zwariuje. Musi być 0.

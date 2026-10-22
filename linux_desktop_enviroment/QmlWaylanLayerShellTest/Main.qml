@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.Basic
+import Mask
 
 
 
@@ -25,27 +26,55 @@ ApplicationWindow {
     property real dockShortSize: 100
     property real dockMargin: 15 // Odstęp od krawędzi ekranu
 
+    // Gdy panel jest otwarty, cały ekran łapie myszkę i klik poza panelem go zamyka.
+    // Zadeklarowane jako pierwsze, więc leży pod dockiem, panelem i resztą.
+    MouseArea {
+        anchors.fill: parent
+        visible: panel.open
+        onPressed: panel.open = false
+
+        MaskArea { anchors.fill: parent }
+    }
+
+    // Gdy ciągniemy dock, cały ekran łapie myszkę
+    MaskArea {
+        anchors.fill: parent
+        visible: dock.isDragging
+    }
+
     AvailableFonts{
         anchors.bottom: parent.bottom
         anchors.right: parent.right
 
-        Component.onCompleted: {
-        //SystemMask.setRectMask(x, y, width, height)
-    }
+        MaskArea { anchors.fill: parent }
     }
 
     Rectangle {
         id: square
+        anchors.topMargin: 50
+        anchors.rightMargin: 50
         anchors.right: parent.right
         anchors.top: parent.top
         width: 200
         height: 200
+
+        MaskArea { anchors.fill: parent }
 
         // 1. Tworzymy własną właściwość, która pamięta, czy kwadrat został kliknięty
         property bool isClicked: false
 
         // 2. Warunek: jeśli isClicked to prawda, użyj "blue", w przeciwnym razie "red"
         color: isClicked ? "blue" : "red"
+
+        Text {
+            text: "PIONOWO"
+            font.pixelSize: 20
+
+            // Wymuszenie zawijania na każdej literze
+            width: 10
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WrapAnywhere
+        }
 
         RotationAnimation {
             target: square
@@ -72,10 +101,12 @@ ApplicationWindow {
         id: dock
 
         // Wygląd w stylu Apple
-        radius: dockShortSize / 2
+        //radius: dockShortSize / 2
+        radius: 20
         //color: window.lightMode ? "rgba(255, 255, 255, 0.85)" : "rgba(40, 40, 40, 0.85)"
         color: "#CCFFFFFF"
-        border.color: "white"
+        //border.color: "white"
+        border.color: "red"
         //border.color: window.lightMode ? "rgba(0, 0, 0, 0.1)" : "rgba(255, 255, 255, 0.1)"
         border.width: 2
 
@@ -94,28 +125,7 @@ ApplicationWindow {
         width: targetW
         height: targetH
 
-
-
-        function updateSystemMask() {
-            if (isDragging) {
-                // Gdy ciągniemy, pozwalamy całemu ekranowi łapać myszkę
-                SystemMask.setFullMask()
-            } else {
-                // Gdy puszczamy (lub gdy trwa animacja przyklejania), maska podąża za dockiem
-                //SystemMask.setRectMask(x, y, width, height)
-            }
-        }
-
-        // Aktualizujemy maskę przy każdej zmianie pozycji/rozmiaru (np. podczas animacji dokowania)
-        onXChanged: updateSystemMask()
-        onYChanged: updateSystemMask()
-        onWidthChanged: updateSystemMask()
-        onHeightChanged: updateSystemMask()
-
-        // Wywołanie również w momencie złapania/puszczenia (zmiana flagi)
-        onIsDraggingChanged: updateSystemMask()
-
-        Component.onCompleted: updateSystemMask()
+        MaskArea { anchors.fill: parent }
 
 
         // --- ANIMACJE ---
@@ -210,6 +220,76 @@ ApplicationWindow {
                 console.log("--- Puszczono dock, przyklejanie do:", dock.currentZone, "---")
                 dock.isDragging = false
                 dock.updateTargets(0, 0)
+            }
+        }
+
+        Rectangle{
+            anchors.verticalCenter:  parent.verticalCenter
+            anchors.left: parent.left
+            color: "blue"
+            width: dockShortSize
+            height: dockShortSize
+            //radius: dockShortSize/2
+            radius: 3
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: panel.open = !panel.open
+            }
+
+
+            Rectangle {
+                id: panel
+                property bool open: false
+
+                width: 300
+                height: 300
+                radius: 8
+                color: "#E8000000"
+                anchors.top: parent.bottom
+                anchors.topMargin: 12
+
+                opacity: 0
+                visible: opacity > 0
+
+                MaskArea { anchors.fill: parent }
+
+                transform: [
+                    // origin = środek kółka, więc panel "wyrasta" z przycisku
+                    Scale { id: panelScale; origin.x: dockShortSize / 2; origin.y: 0; xScale: 0.8; yScale: 0.8 },
+                    Translate { id: panelShift; y: -10 }
+                ]
+
+                states: State {
+                    name: "open"
+                    when: panel.open
+                    PropertyChanges { target: panel; opacity: 1 }
+                    PropertyChanges { target: panelScale; xScale: 1; yScale: 1 }
+                    PropertyChanges { target: panelShift; y: 0 }
+                }
+
+                transitions: [
+                    Transition {
+                        to: "open"
+                        NumberAnimation { target: panel; property: "opacity"; duration: 120; easing.type: Easing.OutCubic }
+                        NumberAnimation {
+                            targets: [panelScale, panelShift]
+                            properties: "xScale,yScale,y"
+                            duration: 280
+                            easing.type: Easing.OutBack
+                            easing.overshoot: 1.2
+                        }
+                    },
+                    Transition {
+                        from: "open"
+                        NumberAnimation {
+                            targets: [panel, panelScale, panelShift]
+                            properties: "opacity,xScale,yScale,y"
+                            duration: 120
+                            easing.type: Easing.InCubic
+                        }
+                    }
+                ]
             }
         }
     }
