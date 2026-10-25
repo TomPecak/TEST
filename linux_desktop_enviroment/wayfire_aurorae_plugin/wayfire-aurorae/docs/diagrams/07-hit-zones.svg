@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 430" width="1000" height="430">
+  <style>
+    text { font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif; font-size: 12px; fill: #1f2937; }
+    .title { font-size: 17px; font-weight: bold; }
+    .h { font-size: 13px; font-weight: bold; }
+    .s { font-size: 11px; fill: #4b5563; }
+    .m { font-family: "DejaVu Sans Mono", monospace; font-size: 11px; fill: #111827; }
+    .title-z { fill: #dbeafe; stroke: #3b6fd8; }
+    .btn { fill: #bbf7d0; stroke: #15803d; }
+    .edge { fill: #fed7aa; stroke: #c2410c; stroke-width: 0.8; }
+    .corner { fill: #fb923c; stroke: #c2410c; stroke-width: 0.8; }
+  </style>
+  <defs>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#ffffff"/><line x1="0" y1="0" x2="0" y2="8" stroke="#e5e7eb" stroke-width="3"/>
+    </pattern>
+  </defs>
+  <rect width="1000" height="430" fill="#ffffff"/>
+  <text x="20" y="28" class="title">Strefy wejścia — hit_test()</text>
+
+  <!-- shadow / padding -->
+  <rect x="40" y="56" width="480" height="360" rx="4" fill="#f3f4f6" stroke="#9ca3af" stroke-dasharray="6 4"/>
+  <text x="50" y="410" class="s">cień (padding): przepuszcza kliknięcia do okien pod spodem</text>
+
+  <!-- extended resize band above the title bar -->
+  <rect x="70" y="74" width="420" height="16" class="edge"/>
+  <rect x="70" y="74" width="32" height="16" class="corner"/>
+  <rect x="458" y="74" width="32" height="16" class="corner"/>
+
+  <!-- borders -->
+  <rect x="70" y="90" width="12" height="280" class="edge"/>
+  <rect x="478" y="90" width="12" height="280" class="edge"/>
+  <rect x="82" y="358" width="396" height="12" class="edge"/>
+  <rect x="70" y="338" width="12" height="32" class="corner"/>
+  <rect x="478" y="338" width="12" height="32" class="corner"/>
+  <rect x="82" y="358" width="20" height="12" class="corner"/>
+  <rect x="458" y="358" width="20" height="12" class="corner"/>
+
+  <!-- title bar and buttons -->
+  <rect x="82" y="90" width="396" height="42" class="title-z"/>
+  <rect x="88" y="99" width="22" height="22" rx="3" class="btn"/>
+  <rect x="396" y="99" width="22" height="22" rx="3" class="btn"/>
+  <rect x="422" y="99" width="22" height="22" rx="3" class="btn"/>
+  <rect x="448" y="99" width="24" height="22" rx="3" class="btn"/>
+  <text x="95" y="115" class="m">M</text><text x="403" y="115" class="m">I</text>
+  <text x="429" y="115" class="m">A</text><text x="456" y="115" class="m">X</text>
+  <text x="200" y="116" class="s">pasek tytułu</text>
+
+  <!-- client -->
+  <rect x="82" y="132" width="396" height="226" fill="url(#hatch)" stroke="#111827"/>
+  <text x="200" y="246" class="h">obszar klienta</text>
+  <text x="170" y="264" class="s">wejście idzie do aplikacji, nie do nas</text>
+  <rect x="70" y="90" width="420" height="280" fill="none" stroke="#111827" stroke-width="2"/>
+
+  <!-- legend -->
+  <g transform="translate(560,60)">
+    <rect x="0" y="0" width="18" height="14" class="title-z"/>
+    <text x="28" y="12" class="h">Pasek tytułu</text>
+    <text x="28" y="28" class="s">przeciągnięcie ≥ 4 px → move_request()</text>
+    <text x="28" y="42" class="s">dwuklik ≤ 400 ms → maksymalizacja · prawy → menu okna</text>
+
+    <rect x="0" y="62" width="18" height="14" class="btn"/>
+    <text x="28" y="74" class="h">Przyciski</text>
+    <text x="28" y="90" class="s">hover/pressed zmienia stan SVG; akcja po puszczeniu</text>
+    <text x="28" y="104" class="s">nad tym samym przyciskiem. A: lewy = oba kierunki,</text>
+    <text x="28" y="118" class="s">środkowy = pionowo, prawy = poziomo (jak KWin)</text>
+
+    <rect x="0" y="138" width="18" height="14" class="edge"/>
+    <text x="28" y="150" class="h">Krawędzie → resize_request(krawędzie)</text>
+    <text x="28" y="166" class="s">ramki boczne/dolna dekoracji + niewidzialny pas</text>
+    <text x="28" y="180" class="s">nad paskiem tytułu (extended_resize_border = 8 px;</text>
+    <text x="28" y="194" class="s">przy border_size none/no_sides także po bokach i u dołu)</text>
+
+    <rect x="0" y="214" width="18" height="14" class="corner"/>
+    <text x="28" y="226" class="h">Narożniki</text>
+    <text x="28" y="242" class="s">2 × extended_resize_border od rogu → oba kierunki</text>
+
+    <text x="0" y="274" class="h">Szczegóły</text>
+    <text x="0" y="292" class="s">• kursor: wlr_xcursor_get_resize_name(krawędzie) albo „default”</text>
+    <text x="0" y="308" class="s">• okno zmaksymalizowane lub o stałym rozmiarze: bez resize</text>
+    <text x="0" y="324" class="s">• find_node_at() zwraca węzeł tylko gdy hit ≠ None,</text>
+    <text x="0" y="340" class="s">  więc cień jest „przezroczysty” dla myszy</text>
+    <text x="0" y="356" class="s">• dotyk (palec 0) działa jak lewy przycisk myszy</text>
+  </g>
+</svg>

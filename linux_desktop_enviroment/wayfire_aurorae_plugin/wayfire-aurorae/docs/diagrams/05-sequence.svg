@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 926" width="1000" height="926">
+  <style>
+    text { font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif; font-size: 12px; fill: #1f2937; }
+    .title { font-size: 17px; font-weight: bold; }
+    .n { font-family: "DejaVu Sans Mono", monospace; font-size: 12px; font-weight: bold; }
+    .msg { font-family: "DejaVu Sans Mono", monospace; font-size: 10.5px; fill: #111827; }
+    .note { font-size: 10.5px; fill: #4b5563; }
+    .phase { font-size: 13px; font-weight: bold; fill: #374151; }
+    .life { stroke: #9ca3af; stroke-width: 1; stroke-dasharray: 4 4; }
+    .call { stroke: #1f2937; stroke-width: 1.4; fill: none; marker-end: url(#a); }
+    .ret { stroke: #6b7280; stroke-width: 1.2; fill: none; stroke-dasharray: 5 3; marker-end: url(#a); }
+  </style>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#1f2937"/></marker></defs>
+  <rect width="1000" height="926" fill="#ffffff"/>
+  <text x="20" y="26" class="title">Cykl życia: okno, stan, klatka, mysz</text>
+  <rect x="8" y="100" width="984" height="274" fill="#f9fafb" stroke="#e5e7eb"/>
+  <text x="16" y="118" class="phase">1. Okno się mapuje</text>
+  <rect x="8" y="386" width="984" height="126" fill="#f9fafb" stroke="#e5e7eb"/>
+  <text x="16" y="404" class="phase">2. Zmiana stanu: aktywacja, resize, maksymalizacja, tytuł</text>
+  <rect x="8" y="524" width="984" height="186" fill="#f9fafb" stroke="#e5e7eb"/>
+  <text x="16" y="542" class="phase">3. Klatka (tylko gdy uszkodzono obszar dekoracji)</text>
+  <rect x="8" y="722" width="984" height="184" fill="#f9fafb" stroke="#e5e7eb"/>
+  <text x="16" y="740" class="phase">4. Mysz i dotyk</text>
+  <line x1="95" y1="84" x2="95" y2="920" class="life"/>
+  <line x1="265" y1="84" x2="265" y2="920" class="life"/>
+  <line x1="420" y1="84" x2="420" y2="920" class="life"/>
+  <line x1="590" y1="84" x2="590" y2="920" class="life"/>
+  <line x1="760" y1="84" x2="760" y2="920" class="life"/>
+  <line x1="915" y1="84" x2="915" y2="920" class="life"/>
+  <rect x="25" y="40" width="140" height="44" rx="5" fill="#f3f4f6" stroke="#8a919c" stroke-width="1.4"/>
+  <text x="95" y="59" class="n" text-anchor="middle">Wayfire</text>
+  <text x="95" y="75" class="note" text-anchor="middle">(scena, transakcje)</text>
+  <rect x="195" y="40" width="140" height="44" rx="5" fill="#fff3e6" stroke="#d97a1f" stroke-width="1.4"/>
+  <text x="265" y="67" class="n" text-anchor="middle">AuroraePlugin</text>
+  <rect x="350" y="40" width="140" height="44" rx="5" fill="#fff3e6" stroke="#d97a1f" stroke-width="1.4"/>
+  <text x="420" y="67" class="n" text-anchor="middle">Decorator</text>
+  <rect x="520" y="40" width="140" height="44" rx="5" fill="#fff3e6" stroke="#d97a1f" stroke-width="1.4"/>
+  <text x="590" y="67" class="n" text-anchor="middle">DecorationNode</text>
+  <rect x="690" y="40" width="140" height="44" rx="5" fill="#eaf1fe" stroke="#3b6fd8" stroke-width="1.4"/>
+  <text x="760" y="59" class="n" text-anchor="middle">core</text>
+  <text x="760" y="75" class="note" text-anchor="middle">(layout, painter, cache)</text>
+  <rect x="845" y="40" width="140" height="44" rx="5" fill="#f3f4f6" stroke="#8a919c" stroke-width="1.4"/>
+  <text x="915" y="59" class="n" text-anchor="middle">render_pass</text>
+  <text x="915" y="75" class="note" text-anchor="middle">(GPU)</text>
+  <path d="M95,146 L262,146" class="call"/>
+  <text x="101" y="141" class="msg">new_transaction_signal</text>
+  <text x="101" y="160" class="note">transakcja zmapuje toplevel</text>
+  <path d="M265,183 L291,183 L291,197 L268,197" class="call"/>
+  <text x="299" y="194" class="msg">should_decorate(): ignore/forced_views, should_be_decorated()</text>
+  <path d="M265,218 L417,218" class="call"/>
+  <text x="271" y="213" class="msg">store_data(make_unique&lt;Decorator&gt;)</text>
+  <path d="M420,248 L587,248" class="call"/>
+  <text x="426" y="243" class="msg">make_shared + update()</text>
+  <path d="M590,278 L757,278" class="call"/>
+  <text x="596" y="273" class="msg">compute_geometry(theme, settings, state)</text>
+  <path d="M420,308 L98,308" class="ret"/>
+  <text x="101" y="303" class="msg">scene::add_back(surface_root, node)</text>
+  <text x="101" y="322" class="note">węzeł za powierzchniami okna — cień i ramka pod klientem</text>
+  <path d="M265,352 L98,352" class="ret"/>
+  <text x="101" y="347" class="msg">pending.margins = borders; geometria += marginesy</text>
+  <path d="M95,432 L417,432" class="call"/>
+  <text x="101" y="427" class="msg">view_activated / geometry_changed / tiled …</text>
+  <path d="M420,462 L587,462" class="call"/>
+  <text x="426" y="457" class="msg">update()</text>
+  <path d="M590,485 L616,485 L616,499 L593,499" class="call"/>
+  <text x="624" y="496" class="msg">bez zmian → nic; inaczej geometria, invalidate, damage</text>
+  <path d="M95,570 L587,570" class="call"/>
+  <text x="101" y="565" class="msg">schedule_instructions(damage)</text>
+  <text x="101" y="584" class="note">damage ∩ (ramka − klient); pusto → nic nie robi</text>
+  <path d="M95,614 L587,614" class="call"/>
+  <text x="101" y="609" class="msg">render(instruction)</text>
+  <path d="M590,644 L757,644" class="call"/>
+  <text x="596" y="639" class="msg">items_for(skala): z cache, po zmianie append_*_items</text>
+  <text x="596" y="658" class="note">lista DrawItem, rastry z RasterCache</text>
+  <path d="M590,688 L912,688" class="call"/>
+  <text x="596" y="683" class="msg">gpu_texture(raster) → add_texture(src, dst) × N</text>
+  <path d="M95,768 L587,768" class="call"/>
+  <text x="101" y="763" class="msg">find_node_at(p)</text>
+  <text x="101" y="782" class="note">hit_test: przycisk, pasek, krawędź; cień → przepuść do okien pod spodem</text>
+  <path d="M95,812 L587,812" class="call"/>
+  <text x="101" y="807" class="msg">handle_pointer_motion / button</text>
+  <path d="M590,835 L616,835 L616,849 L593,849" class="call"/>
+  <text x="624" y="846" class="msg">hover → invalidate(buttons), damage, set_cursor</text>
+  <path d="M590,870 L98,870" class="ret"/>
+  <text x="101" y="865" class="msg">activate_button → tile_request / close / minimize / set_sticky</text>
+  <text x="101" y="884" class="note">pasek: move_request, dwuklik = maksymalizacja; krawędź: resize_request</text>
+</svg>

@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 640" width="1000" height="640">
+  <style>
+    text { font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif; font-size: 13px; fill: #1f2937; }
+    .title { font-size: 17px; font-weight: bold; }
+    .h { font-size: 14px; font-weight: bold; }
+    .s { font-size: 11px; fill: #4b5563; }
+    .m { font-family: "DejaVu Sans Mono", "Noto Sans Mono", monospace; font-size: 12px; font-weight: bold; }
+    .core { fill: #eaf1fe; stroke: #3b6fd8; stroke-width: 1.5; }
+    .core2 { fill: #ffffff; stroke: #9db5ec; }
+    .wf { fill: #fff3e6; stroke: #d97a1f; stroke-width: 1.5; }
+    .wf2 { fill: #ffffff; stroke: #efb47a; }
+    .ext { fill: #f3f4f6; stroke: #8a919c; stroke-width: 1.5; }
+    .tool { fill: #eaf7ef; stroke: #2f9e5a; stroke-width: 1.5; }
+    .arrow { stroke: #4b5563; stroke-width: 1.6; fill: none; marker-end: url(#a); }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4b5563"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="640" fill="#ffffff"/>
+  <text x="40" y="30" class="title">Warstwy i zależności</text>
+
+  <!-- Wayfire -->
+  <rect x="40" y="48" width="920" height="44" rx="6" class="ext"/>
+  <text x="56" y="75" class="h">Wayfire 0.10 · wlroots 0.19</text>
+  <text x="290" y="75" class="s">graf sceny · transakcje (marginesy okna) · render_pass_t · wejście · sygnały widoków · IPC</text>
+
+  <path d="M500,92 L500,112" class="arrow"/>
+  <text x="510" y="107" class="s">API pluginu (wf::plugin_interface_t, scene::node_t)</text>
+
+  <!-- Plugin layer -->
+  <rect x="40" y="116" width="920" height="128" rx="6" class="wf"/>
+  <text x="56" y="138" class="h">src/wayfire — integracja z Wayfire (~1 400 linii)</text>
+  <g>
+    <rect x="56" y="150" width="180" height="80" rx="4" class="wf2"/>
+    <text x="66" y="170" class="m">plugin.cpp</text>
+    <text x="66" y="188" class="s">opcje, wybór okien,</text>
+    <text x="66" y="202" class="s">marginesy w transakcjach,</text>
+    <text x="66" y="216" class="s">rekonfiguracja na żywo</text>
+
+    <rect x="246" y="150" width="160" height="80" rx="4" class="wf2"/>
+    <text x="256" y="170" class="m">decorator</text>
+    <text x="256" y="188" class="s">dane przypięte do okna;</text>
+    <text x="256" y="202" class="s">sygnały widoku → węzeł</text>
+
+    <rect x="416" y="150" width="196" height="80" rx="4" class="wf2"/>
+    <text x="426" y="170" class="m">decoration-node</text>
+    <text x="426" y="188" class="s">węzeł sceny: rysowanie,</text>
+    <text x="426" y="202" class="s">mysz/dotyk, cache list quadów</text>
+    <text x="426" y="216" class="s">i tekstury tytułu</text>
+
+    <rect x="622" y="150" width="160" height="80" rx="4" class="wf2"/>
+    <text x="632" y="170" class="m">window-actions</text>
+    <text x="632" y="188" class="s">co robią przyciski:</text>
+    <text x="632" y="202" class="s">tile, close, minimize,</text>
+    <text x="632" y="216" class="s">sticky, keep-above</text>
+
+    <rect x="792" y="150" width="152" height="80" rx="4" class="wf2"/>
+    <text x="802" y="170" class="m">gpu-texture</text>
+    <text x="802" y="188" class="s">Raster → wlr_texture,</text>
+    <text x="802" y="202" class="s">upload jeden raz</text>
+  </g>
+
+  <path d="M500,244 L500,268" class="arrow"/>
+  <text x="510" y="262" class="s">Theme, Settings, compute_geometry, hit_test, append_*_items, render_caption</text>
+
+  <!-- Core layer -->
+  <rect x="40" y="272" width="920" height="238" rx="6" class="core"/>
+  <text x="56" y="294" class="h">src/core — silnik niezależny od Wayfire (~4 300 linii)</text>
+
+  <rect x="56" y="306" width="212" height="190" rx="4" class="core2"/>
+  <text x="68" y="326" class="h">Motyw</text>
+  <text x="68" y="348" class="m">ini-file</text>
+  <text x="68" y="363" class="s">czytnik INI w stylu KConfig</text>
+  <text x="68" y="385" class="m">theme-config</text>
+  <text x="68" y="400" class="s">klucze pliku rc, domyślne KWin</text>
+  <text x="68" y="422" class="m">theme</text>
+  <text x="68" y="437" class="s">ładuje motyw, stany, borders()</text>
+  <text x="68" y="459" class="m">kde-settings</text>
+  <text x="68" y="474" class="s">font, ikony, motyw z KDE</text>
+
+  <rect x="280" y="306" width="212" height="190" rx="4" class="core2"/>
+  <text x="292" y="326" class="h">SVG</text>
+  <text x="292" y="348" class="m">svg-document</text>
+  <text x="292" y="363" class="s">librsvg mierzy i rysuje jak QtSvg</text>
+  <text x="292" y="385" class="m">frame-svg</text>
+  <text x="292" y="400" class="s">KSvg::FrameSvg: 9-slice, hinty,</text>
+  <text x="292" y="414" class="s">overlay, arytmetyka pikseli</text>
+  <text x="292" y="436" class="m">buttons</text>
+  <text x="292" y="451" class="s">typy, litery układu, stany</text>
+  <text x="292" y="465" class="s">przycisku i ich fallbacki</text>
+
+  <rect x="504" y="306" width="212" height="190" rx="4" class="core2"/>
+  <text x="516" y="326" class="h">Geometria</text>
+  <text x="516" y="348" class="m">settings</text>
+  <text x="516" y="363" class="s">opcje użytkownika (rozmiary,</text>
+  <text x="516" y="377" class="s">układ przycisków, font)</text>
+  <text x="516" y="399" class="m">decoration-layout</text>
+  <text x="516" y="414" class="s">geometria jednej dekoracji</text>
+  <text x="516" y="428" class="s">+ hit-testing (czyste funkcje)</text>
+  <text x="516" y="450" class="m">geometry.hpp</text>
+  <text x="516" y="465" class="s">RectF, SizeF, Margins, qround</text>
+
+  <rect x="728" y="306" width="216" height="190" rx="4" class="core2"/>
+  <text x="740" y="326" class="h">Rysowanie</text>
+  <text x="740" y="346" class="m">raster</text>
+  <text x="840" y="346" class="s">obrazy + cache</text>
+  <text x="740" y="370" class="m">draw-list</text>
+  <text x="840" y="370" class="s">kawałki → quady</text>
+  <text x="740" y="394" class="m">decoration-</text>
+  <text x="740" y="408" class="m">painter</text>
+  <text x="840" y="394" class="s">ramka + ramka</text>
+  <text x="840" y="408" class="s">wewn. + przyciski</text>
+  <text x="740" y="432" class="m">caption</text>
+  <text x="840" y="432" class="s">tytuł (Pango)</text>
+  <text x="740" y="456" class="m">app-icons</text>
+  <text x="840" y="456" class="s">ikona okna</text>
+  <text x="740" y="480" class="m">cairo-backend</text>
+  <text x="852" y="480" class="s">quady na CPU</text>
+
+  <!-- bottom row -->
+  <path d="M700,510 L700,540" class="arrow"/>
+  <rect x="480" y="544" width="480" height="76" rx="6" class="ext"/>
+  <text x="496" y="566" class="h">Biblioteki</text>
+  <text x="496" y="588" class="m">librsvg</text>
+  <text x="566" y="588" class="s">SVG → cairo</text>
+  <text x="676" y="588" class="m">libxml2</text>
+  <text x="746" y="588" class="s">preprocessing SVG</text>
+  <text x="496" y="608" class="m">cairo</text>
+  <text x="566" y="608" class="s">obrazy ARGB32</text>
+  <text x="676" y="608" class="m">pango</text>
+  <text x="746" y="608" class="s">tekst · </text>
+  <text x="796" y="608" class="m">gio</text>
+  <text x="826" y="608" class="s">gzip (.svgz)</text>
+
+  <rect x="40" y="544" width="420" height="76" rx="6" class="tool"/>
+  <text x="56" y="566" class="h">Narzędzia i testy (ten sam core)</text>
+  <text x="56" y="588" class="m">tools/aurorae-preview</text>
+  <text x="236" y="588" class="s">PNG, --dump, --benchmark</text>
+  <text x="56" y="608" class="m">tests/</text>
+  <text x="106" y="608" class="s">jednostkowe · integracyjne (headless Wayfire)</text>
+  <path d="M250,544 L250,514" class="arrow"/>
+</svg>

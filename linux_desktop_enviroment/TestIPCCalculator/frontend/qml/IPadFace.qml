@@ -569,8 +569,12 @@ Item {
                     onClicked: Theme.setDark(!Theme.dark)
                 }
                 MenuRow {
-                    text: qsTr("Lumen Look (Ctrl+Shift+F)")
+                    text: qsTr("Lumen Look")
                     onClicked: face.shell.switchFace("lumen")
+                }
+                MenuRow {
+                    text: qsTr("Cyberpunk Look (Ctrl+Shift+F)")
+                    onClicked: face.shell.switchFace("cyber")
                 }
                 Rectangle {
                     width: parent.width

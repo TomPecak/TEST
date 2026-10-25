@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+  <rect id="hint-stretch-borders" x="55" y="55" width="2" height="2" fill="none"/>
+  <rect id="topleft" x="0" y="0" width="4" height="6"/>
+  <rect id="top" x="4" y="0" width="3" height="6"/>
+  <rect id="topright" x="7" y="0" width="4" height="6"/>
+  <rect id="left" x="0" y="6" width="4" height="5"/>
+  <rect id="center" x="4" y="6" width="3" height="5"/>
+  <rect id="right" x="7" y="6" width="4" height="5"/>
+  <rect id="bottomleft" x="0" y="11" width="4" height="4"/>
+  <rect id="bottom" x="4" y="11" width="3" height="4"/>
+  <rect id="bottomright" x="7" y="11" width="4" height="4"/>
+</svg>

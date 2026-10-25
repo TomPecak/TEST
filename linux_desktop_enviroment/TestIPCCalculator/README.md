@@ -4,8 +4,8 @@ Testowy kalkulator w architekturze „usługa + kontrakt + frontend”, drugi po
 
 - **backend**: usługa w Ruście (`calculator-service`) liczy wszystko i przechowuje historię oraz pamięć;
 - **IPC**: Cap'n Proto RPC przez gniazdo Unix;
-- **frontend**: Qt 6 / QML z dwiema „twarzami” do wyboru: Lumen (tryb standardowy kalkulatora
-  Windows 11) i iPadOS 18. To cienka warstwa, która tylko przekazuje klawisze i pokazuje stan.
+- **frontend**: Qt 6 / QML z trzema „twarzami” do wyboru: Lumen (tryb standardowy kalkulatora
+  Windows 11), iPadOS 18 i Cyber (neon na czerni, w stylu makiety Maia cyberpunk). To cienka warstwa, która tylko przekazuje klawisze i pokazuje stan.
 
 W przeciwieństwie do menedżera plików kalkulator nie potrzebuje dostępu do systemu. Sprawdza więc
 inną rzecz: czy logika aplikacji może w całości mieszkać w usłudze, a okno być wyłącznie skórką.
@@ -23,7 +23,7 @@ jego zamknięciu kończy usługę. Na pulpicie jest skrót „Test Calculator”
 - `./run.sh --service` uruchamia tylko usługę. Restart usługi przy otwartym oknie pokazuje czerwony
   pasek; po powrocie okno łączy się samo. Historia i pamięć zostają, bieżące działanie zaczyna się od zera.
 - `./run.sh --selftest` sprawia, że okno samo naciska klawisze i sprawdza wyniki (log w terminalu).
-- Opcje okna: `--face lumen|ipad`, `--size 720x560` (szeroki układ z panelem), `--panel history|memory`,
+- Opcje okna: `--face lumen|ipad|cyber`, `--size 720x560` (szeroki układ z panelem), `--panel history|memory`,
   `--keys c,1,2,add` (klawisze po starcie, do pokazów i zrzutów; `extra` otwiera dodatkowe klawisze iPadOS),
   `--anim-bench extra|sidebar` (otwiera i zamyka panel twarzy iPadOS i mierzy, jak zajęty jest wątek GUI),
   `--resize-bench` (zmienia rozmiar okna jak przy ciągnięciu krawędzi i mierzy to samo),
@@ -31,24 +31,81 @@ jego zamknięciu kończy usługę. Na pulpicie jest skrót „Test Calculator”
 
 Historia i pamięć: `$XDG_DATA_HOME/test-ipc-calculator/state.json`.
 
-## Dwie twarze, jedna sesja
+## Budowanie całości przez CMake
 
-| | Lumen (Windows 11) | iPadOS 18 |
-|---|---|---|
-| klawisze | prostokątne, 4 × 6, C / CE / ⌫ na stałe | okrągłe (w szerokim oknie kapsułki), pomarańczowe działania |
-| bieżące działanie | górna linia | górna linia i podświetlony przycisk działania |
-| kasowanie | C, CE, ⌫ | AC, które w trakcie wpisywania zmienia się w ⌫ |
-| funkcje √ x² 1/x, pamięć | zawsze widoczne | pod przyciskiem z kalkulatorem (wąsko: 2 rzędy, szeroko: 2 kolumny jak tryb naukowy) |
-| historia | panel po prawej albo wysuwany od dołu | panel boczny z lewej |
-| okno | pasek tytułu z przyciskami | menu „•••” u góry, jak w Stage Managerze |
+Oprócz `run.sh` (cargo i cmake osobno) jest wspólny build w CMake: jedno polecenie buduje usługę
+i okno, uruchamia testy i instaluje oba programy.
 
-Przełączanie: przycisk „iPadOS” w nagłówku Lumen, „Lumen Look” w menu „•••”, **Ctrl+Shift+F** albo
-`--face lumen|ipad`; wybór jest zapamiętywany. Obie twarze rozmawiają z tą samą sesją w usłudze, więc
+```bash
+cmake -S . -B build -G Ninja                    # domyślnie Release
+cmake --build build -j 3                        # cargo (usługa) + C++ (okno)
+ctest --test-dir build                          # cargo test usługi
+cmake --install build --prefix ~/opt/test-ipc-calculator
+~/opt/test-ipc-calculator/bin/test-ipc-calculator --face cyber
+```
+
+| Plik | Rola |
+|---|---|
+| `CMakeLists.txt` | spina `backend/` i `frontend/`, instaluje launcher |
+| `cmake/MaiaRust.cmake` | `maia_add_cargo_executable()`: cargo jako cel CMake (profil z `CMAKE_BUILD_TYPE`, wspólny katalog wynikowy w `build/cargo`, `MAIA_CARGO_JOBS`, instalacja, `cargo test` w CTest) |
+| `backend/CMakeLists.txt` | usługa jako cel `calculator-service` |
+| `frontend/CMakeLists.txt` | okno `test-calculator` (da się je też zbudować samo: `cmake -S frontend`) |
+| `scripts/test-ipc-calculator.sh.in` | launcher zainstalowanej wersji |
+
+Po instalacji:
+
+```
+bin/test-ipc-calculator                         launcher: uruchamia usługę, jeśli żadna nie nasłuchuje, i otwiera okno
+bin/test-calculator                             okno (Qt)
+libexec/test-ipc-calculator/calculator-service  usługa (Rust)
+```
+
+Cargo sam decyduje, co przebudować, więc cel usługi uruchamia go przy każdym buildzie (bez zmian
+trwa to ok. 0,1 s). Launcher liczy ścieżki względem siebie, więc działa przy dowolnym `--prefix`.
+Usługa przy starcie przejmuje gniazdo, dlatego launcher najpierw sprawdza (`ss -xl`), czy jakaś już
+nasłuchuje, i zatrzymuje tylko tę, którą sam uruchomił.
+
+## Trzy twarze, jedna sesja
+
+| | Lumen (Windows 11) | iPadOS 18 | Cyber |
+|---|---|---|---|
+| klawisze | prostokątne, 4 × 6, C / CE / ⌫ na stałe | okrągłe (w szerokim oknie kapsułki), pomarańczowe działania | 4 × 6 ze ściętym rogiem, świecące neonowe kontury; cyfry białe, funkcje cyjan, kasowanie róż, działania żółte, `=` mocniejszy żółty kontur; naciśnięcie zalewa klawisz kolorem |
+| bieżące działanie | górna linia | górna linia i podświetlony przycisk działania | górna linia |
+| kasowanie | C, CE, ⌫ | AC, które w trakcie wpisywania zmienia się w ⌫ | C, CE, ⌫ |
+| funkcje √ x² 1/x, pamięć | zawsze widoczne | pod przyciskiem z kalkulatorem (wąsko: 2 rzędy, szeroko: 2 kolumny jak tryb naukowy) | zawsze widoczne |
+| historia | panel po prawej albo wysuwany od dołu | panel boczny z lewej | panel po prawej albo wysuwany od dołu (przycisk „LOG”) |
+| okno | pasek tytułu z przyciskami | menu „•••” u góry, jak w Stage Managerze | pasek tytułu z kwadratowymi przyciskami, ramka ze ściętymi rogami |
+
+Twarz Cyber jest robiona pod ekrany OLED: tło to wszędzie czysta czerń (#000000), więc poza neonami
+i ich poświatą piksele są wyłączone, a kolory (cyjan #00F0FF, róż #FF2A6D, żółty #FCEE0A, fiolet #9D4EDD,
+jak w makiecie) mocno odcinają się od tła. Czcionki: IBM Plex Mono (napisy) i Ubuntu Sans w wersji wąskiej
+(`wdth` 75, liczby i cyfry).
+
+Świecenie to „bloom” z własnymi shaderami (`NeonBloom.qml`, `shaders/blur.frag`, `shaders/neon.frag`,
+kompilowane do `.qsb` przez `qt_add_shaders`). Cała twarz jest renderowana do tekstury (`layer.effect`),
+z której powstają dwa poziomy poświaty: bliska (rozmycie gaussowskie w 1/2 rozdzielczości) i szeroka aura
+(jeszcze raz w 1/4). Shader `neon.frag` dodaje je do ostrego obrazu jak światło (czerń + 0 = czerń),
+podbija nasycenie poświaty, lekko rozszczepia kolory (aberracja chromatyczna) i dokłada linie skanowania.
+Przy pojawieniu się twarzy neon miga, jakby się zapalał. Efekt liczy się tylko wtedy, gdy coś się zmienia
+(klawisz, najechanie, mrugający kursor przez `Timer` dwa razy na sekundę), nie w każdej klatce.
+Elementy z pełnym wypełnieniem świeciłyby tak mocno, że zalałyby własny napis, dlatego zaznaczone
+przyciski mają podświetlony środek i mocny kontur, a pełne wypełnienie jest tylko w chwili naciśnięcia.
+
+Bez GPU (renderer programowy, np. `QT_QPA_PLATFORM=offscreen` bez `QT_QUICK_BACKEND=rhi`) shaderów nie ma:
+twarz wygląda tak samo, tylko bez poświaty (linie dostają wtedy drugi, szeroki przezroczysty kontur).
+Zrzut z efektem: `QT_QUICK_BACKEND=rhi QSG_RHI_BACKEND=opengl QT_QPA_PLATFORM=offscreen test-calculator
+--face cyber --screenshot x.png`. Przy ciągłym przeciąganiu krawędzi okna (`--resize-bench`) bloom liczy
+tekstury od nowa w każdej klatce: mediana 16 ms na klatkę (Lumen: 7 ms), więc ok. 60 klatek z pojedynczymi
+spadkami.
+
+Przełączanie: **Ctrl+Shift+F** przechodzi w kółko Lumen → iPadOS → Cyber; dodatkowo przycisk „iPadOS”
+w nagłówku Lumen, „Lumen Look” i „Cyberpunk Look” w menu „•••” iPadOS, „SKIN ▸” w twarzy Cyber albo
+`--face lumen|ipad|cyber`; wybór jest zapamiętywany. Wszystkie twarze rozmawiają z tą samą sesją w usłudze, więc
 przełączenie w środku działania (np. „6 ×”) niczego nie gubi: liczba, oczekujące działanie, historia
 i pamięć zostają. Selftest sprawdza właśnie to: przełącza twarz w trakcie „6 × 7” i oczekuje 42.
 
 Wspólna rama okna (`Main.qml`) ma klawiaturę, zmianę rozmiaru i selftest. Twarz (`LumenFace.qml`,
-`IPadFace.qml`) to tylko wygląd. Kolejną twarz dodaje się jako nowy plik QML, bez zmian w usłudze
+`IPadFace.qml`, `CyberFace.qml`) to tylko wygląd. Kolejną twarz dodaje się jako nowy plik QML, bez zmian w usłudze
 i w C++.
 
 ## Kontrakt (`contract/calculator.capnp`)
@@ -146,11 +203,16 @@ backend/src/number.rs          liczby dziesiętne, zaokrąglanie, formatowanie, 
 backend/src/expr.rs            wyrażenia z kolejnością działań (evaluate)
 backend/src/store.rs           historia i pamięć zapisywane na dysku
 frontend/src/CalculatorBackend singleton QML "Calc": połączenie Cap'n Proto w osobnym wątku
+CMakeLists.txt                 wspólny build: usługa + okno + launcher
+cmake/MaiaRust.cmake           cargo jako cel CMake
 frontend/qml/Main.qml          rama okna: klawiatura, zmiana rozmiaru, przełączanie twarzy, selftest
 frontend/qml/LumenFace.qml     twarz Lumen (Windows 11)
 frontend/qml/CalcButton.qml    klawisz Lumen (cyfra / funkcja / akcent)
 frontend/qml/SidePanel.qml     historia i pamięć Lumen
 frontend/qml/IPadFace.qml      twarz iPadOS 18 (klawisze, historia z boku, menu „•••”)
+frontend/qml/CyberFace.qml     twarz Cyber (neon na czerni pod OLED, w stylu makiety Maia cyberpunk)
+frontend/qml/NeonBloom.qml     efekt świecenia (bloom) jako layer.effect: rozmycie w 1/2 i 1/4, złożenie
+frontend/shaders/              shadery GLSL bloomu (rozmycie gaussowskie, złożenie neonu), kompilowane do .qsb
 ```
 
 ## Czego (jeszcze) nie ma

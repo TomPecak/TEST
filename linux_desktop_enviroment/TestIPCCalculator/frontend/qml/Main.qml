@@ -9,6 +9,7 @@ import TestCalculator
 // the switching between faces:
 //   "lumen" - LumenFace.qml, the standard mode of the Windows 11 calculator
 //   "ipad"  - IPadFace.qml, the calculator of iPadOS 18
+//   "cyber" - CyberFace.qml, neon on black in the style of the Maia cyberpunk mockup (OLED)
 //
 // A face is only a look. Every face talks to the same calculator session in the service (Calc),
 // so switching (button in the face, Ctrl+Shift+F, --face) keeps the number on the display, the
@@ -23,7 +24,10 @@ Window {
     // Last key (keypad or keyboard): the iPad face highlights the pending operator and shows
     // ⌫ instead of AC while a number is typed
     property string lastKey: ""
-    readonly property string face: settings.face === "ipad" ? "ipad" : "lumen"
+    // The faces in the order of switching (Ctrl+Shift+F goes to the next one)
+    readonly property var faces: ["lumen", "ipad", "cyber"]
+    readonly property string face: faces.indexOf(settings.face) >= 0 ? settings.face : "lumen"
+    readonly property string followingFace: faces[(faces.indexOf(face) + 1) % faces.length]
     property string nextFace: ""
 
     width: Calc.startOptions.width || 340
@@ -45,7 +49,7 @@ Window {
 
     Component.onCompleted: {
         const face = Calc.startOptions.face
-        if (face === "lumen" || face === "ipad")
+        if (faces.indexOf(face) >= 0)
             settings.face = face
         // The face is known now: load it (and only it)
         faceLoader.active = true
@@ -93,7 +97,7 @@ Window {
 
         anchors.fill: parent
         active: false
-        sourceComponent: window.face === "ipad" ? ipadFace : lumenFace
+        sourceComponent: window.face === "ipad" ? ipadFace : window.face === "cyber" ? cyberFace : lumenFace
         onLoaded: {
             if (Calc.startOptions.panel && !window.startPanelOpened) {
                 window.startPanelOpened = true
@@ -113,6 +117,12 @@ Window {
         id: ipadFace
 
         IPadFace { shell: window }
+    }
+
+    Component {
+        id: cyberFace
+
+        CyberFace { shell: window }
     }
 
     // --anim-bench extra|sidebar: opens and closes a panel of the iPad face 6 times and measures
@@ -265,7 +275,7 @@ Window {
             const text = event.text
             let key = ""
             if (ctrl && shift && event.key === Qt.Key_F) {
-                window.switchFace(window.face === "ipad" ? "lumen" : "ipad")
+                window.switchFace(window.followingFace)
             } else if (ctrl) {
                 switch (event.key) {
                 case Qt.Key_C: Calc.copy(); break

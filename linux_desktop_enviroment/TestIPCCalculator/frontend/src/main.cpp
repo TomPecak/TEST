@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     parser.addOption({QStringLiteral("anim-bench"), QStringLiteral("Toggle a panel of the iPad face and log how busy the GUI thread is: extra or sidebar"), QStringLiteral("panel")});
     parser.addOption({QStringLiteral("resize-bench"), QStringLiteral("Resize the window step by step (like dragging an edge) and log how busy the GUI thread is")});
     parser.addOption({QStringLiteral("keys"), QStringLiteral("Keys to press after the start, e.g. 1,2,add"), QStringLiteral("list")});
-    parser.addOption({QStringLiteral("face"), QStringLiteral("Look of the calculator: lumen or ipad (remembered)"), QStringLiteral("name")});
+    parser.addOption({QStringLiteral("face"), QStringLiteral("Look of the calculator: lumen, ipad or cyber (remembered)"), QStringLiteral("name")});
     parser.process(app);
 
     QString socket = qEnvironmentVariable("TEST_IPC_CALCULATOR_SOCKET");

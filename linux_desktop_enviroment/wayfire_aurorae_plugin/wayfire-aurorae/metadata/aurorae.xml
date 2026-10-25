@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<wayfire>
+	<plugin name="aurorae">
+		<_short>Aurorae Decorations</_short>
+		<_long>Window decorations from KDE Aurorae SVG themes. Replaces the "decoration" plugin; enable only one of the two.</_long>
+		<category>Effects</category>
+		<option name="theme" type="string">
+			<_short>Theme</_short>
+			<_long>Name of an Aurorae theme in ~/.local/share/aurorae/themes or /usr/share/aurorae/themes, or the path of a theme directory. Empty: the theme KWin uses (kwinrc), else the first installed one.</_long>
+			<default></default>
+		</option>
+		<option name="border_size" type="string">
+			<_short>Border size</_short>
+			<_long>KDE's border size setting: none, no_sides, tiny, normal, large, very_large, huge, very_huge, oversized. "theme" uses the theme's borders unclamped.</_long>
+			<default>normal</default>
+		</option>
+		<option name="button_size" type="string">
+			<_short>Button size</_short>
+			<_long>KDE's button size setting: tiny, normal, large, very_large, huge, very_huge, oversized.</_long>
+			<default>normal</default>
+		</option>
+		<option name="buttons_left" type="string">
+			<_short>Buttons on the left</_short>
+			<_long>KDE button layout letters: M menu, S on all workspaces, F keep above, I minimize, A maximize, X close, _ spacer.</_long>
+			<default>MS</default>
+		</option>
+		<option name="buttons_right" type="string">
+			<_short>Buttons on the right</_short>
+			<_long>KDE button layout letters, see "Buttons on the left".</_long>
+			<default>HIAX</default>
+		</option>
+		<option name="font" type="string">
+			<_short>Title font</_short>
+			<_long>Pango font description, e.g. "Noto Sans Bold 10". Empty: KDE's title bar font from kdeglobals, else Noto Sans 10.</_long>
+			<default></default>
+		</option>
+		<option name="legacy_text_shadow" type="bool">
+			<_short>Theme text shadow</_short>
+			<_long>Draw the title text shadow some older themes define (UseTextShadow). Current KWin ignores it.</_long>
+			<default>false</default>
+		</option>
+		<option name="extended_resize_border" type="int">
+			<_short>Extended resize area</_short>
+			<_long>Width in pixels of the invisible resize area above the title bar (and around the window when the border size is none or no_sides), like KWin.</_long>
+			<default>8</default>
+			<min>0</min>
+			<max>64</max>
+		</option>
+		<option name="ignore_views" type="string">
+			<_short>Windows without decorations</_short>
+			<_long>Windows matching these criteria are never decorated.</_long>
+			<default>none</default>
+		</option>
+		<option name="forced_views" type="string">
+			<_short>Windows always decorated</_short>
+			<_long>Windows matching these criteria are decorated even if they draw their own decorations.</_long>
+			<default>none</default>
+		</option>
+	</plugin>
+</wayfire>

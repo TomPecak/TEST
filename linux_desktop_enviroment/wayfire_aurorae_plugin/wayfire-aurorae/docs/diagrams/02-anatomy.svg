@@ -1,0 +1,123 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="1000" height="560">
+  <style>
+    text { font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif; font-size: 13px; fill: #1f2937; }
+    .title { font-size: 17px; font-weight: bold; }
+    .h { font-size: 14px; font-weight: bold; }
+    .s { font-size: 11px; fill: #4b5563; }
+    .m { font-family: "DejaVu Sans Mono", "Noto Sans Mono", monospace; font-size: 11px; fill: #1e3a8a; }
+    .corner { fill: #c9dafc; stroke: #3b6fd8; stroke-width: 1; }
+    .edge { fill: #dfe9fd; stroke: #3b6fd8; stroke-width: 1; }
+    .center { fill: #eef3fe; stroke: #3b6fd8; stroke-width: 1; }
+    .dim { stroke: #b91c1c; stroke-width: 1.2; fill: none; marker-start: url(#d); marker-end: url(#d); }
+    .note { fill: #b91c1c; font-size: 11px; }
+    .dot { fill: #b91c1c; }
+  </style>
+  <defs>
+    <marker id="d" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,5 L10,5 M5,0 L5,10" stroke="#b91c1c" stroke-width="2"/>
+    </marker>
+    <pattern id="hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="8" height="8" fill="#ffffff"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#e5e7eb" stroke-width="3"/>
+    </pattern>
+  </defs>
+  <rect width="1000" height="560" fill="#ffffff"/>
+  <text x="40" y="30" class="title">Anatomia dekoracji</text>
+
+  <!-- nine-slice frame (covers decoration + padding) -->
+  <rect x="60" y="70" width="38" height="64" class="corner"/>
+  <rect x="98" y="70" width="484" height="64" class="edge"/>
+  <rect x="582" y="70" width="38" height="64" class="corner"/>
+  <rect x="60" y="134" width="38" height="318" class="edge"/>
+  <rect x="98" y="134" width="484" height="318" class="center"/>
+  <rect x="582" y="134" width="38" height="318" class="edge"/>
+  <rect x="60" y="452" width="38" height="38" class="corner"/>
+  <rect x="98" y="452" width="484" height="38" class="edge"/>
+  <rect x="582" y="452" width="38" height="38" class="corner"/>
+  <text x="64" y="84" class="m">topleft</text>
+  <text x="300" y="84" class="m">top</text>
+  <text x="583" y="84" class="m">t.r.</text>
+  <text x="64" y="300" class="m">left</text>
+  <text x="586" y="300" class="m">right</text>
+  <text x="64" y="486" class="m">b.l.</text>
+  <text x="300" y="486" class="m">bottom</text>
+  <text x="586" y="486" class="m">b.r.</text>
+
+  <!-- decoration rectangle and padding -->
+  <rect x="84" y="94" width="512" height="372" fill="none" stroke="#111827" stroke-width="2"/>
+  <rect x="60" y="70" width="560" height="420" fill="none" stroke="#6b7280" stroke-width="1.2" stroke-dasharray="6 4"/>
+
+  <!-- client area -->
+  <rect x="98" y="146" width="484" height="306" fill="url(#hatch)" stroke="#111827" stroke-width="1.5"/>
+  <text x="250" y="286" class="h">obszar klienta</text>
+  <text x="206" y="306" class="s">tu dekoracja nigdy nie rysuje (jak w KWin)</text>
+  <text x="300" y="332" class="m">center</text>
+  <text x="200" y="348" class="s">środek ramki jest pod spodem — widać go</text>
+  <text x="200" y="362" class="s">tylko w pasku tytułu, nad klientem</text>
+
+  <!-- title bar content -->
+  <rect x="102" y="104" width="20" height="20" rx="3" fill="#ffffff" stroke="#374151"/>
+  <text x="107" y="119" class="s">M</text>
+  <rect x="136" y="102" width="376" height="26" fill="none" stroke="#059669" stroke-dasharray="4 3"/>
+  <text x="236" y="120" fill="#047857" font-size="12">caption — tytuł okna</text>
+  <rect x="520" y="104" width="22" height="20" rx="3" fill="#ffffff" stroke="#374151"/>
+  <rect x="544" y="104" width="22" height="20" rx="3" fill="#ffffff" stroke="#374151"/>
+  <rect x="568" y="104" width="24" height="20" rx="3" fill="#fee2e2" stroke="#b91c1c"/>
+  <text x="527" y="119" class="s">I</text>
+  <text x="550" y="119" class="s">A</text>
+  <text x="575" y="119" class="s">X</text>
+
+  <!-- coordinate origins -->
+  <circle cx="98" cy="146" r="5" fill="#b91c1c"/>
+  <circle cx="84" cy="94" r="5" fill="#7c3aed"/>
+  <circle cx="60" cy="70" r="5" fill="#6b7280"/>
+
+  <!-- dimensions -->
+  <path d="M44,70 L44,94" class="dim"/>
+  <text x="16" y="62" class="note">padding</text>
+  <path d="M589,94 L589,146" class="dim"/>
+  <text x="576" y="168" class="note" text-anchor="end">borders.top = max(TitleHeight, ButtonHeight + ButtonMarginTop)</text>
+  <text x="576" y="182" class="note" text-anchor="end">+ TitleEdgeTop + TitleEdgeBottom</text>
+  <path d="M84,520 L98,520" class="dim"/>
+  <text x="104" y="524" class="note">borders.left (BorderLeft, przycięte do 4–6 px przy „normal”)</text>
+  <path d="M60,540 L98,540" class="dim"/>
+  <text x="104" y="544" class="note">margines FrameSvg = szerokość elementu „left” (lub hint-left-margin)</text>
+
+  <!-- legend -->
+  <g transform="translate(700,60)">
+    <text x="0" y="12" class="h">Punkty (0,0)</text>
+    <circle cx="6" cy="30" r="5" fill="#b91c1c"/>
+    <text x="18" y="34" class="s">róg klienta = (0,0) węzła sceny Wayfire</text>
+    <circle cx="6" cy="52" r="5" fill="#7c3aed"/>
+    <text x="18" y="56" class="s">róg dekoracji = (0,0) geometrii w core;</text>
+    <text x="18" y="70" class="s">w węźle leży w (−borders.left, −borders.top)</text>
+    <circle cx="6" cy="88" r="5" fill="#6b7280"/>
+    <text x="18" y="92" class="s">róg ramki FrameSvg = (−padding): cień</text>
+
+    <text x="0" y="132" class="h">Jak FrameSvg kroi ramkę</text>
+    <rect x="0" y="144" width="14" height="14" class="corner"/>
+    <text x="22" y="156" class="s">narożniki: wpasowane w róg, bez kafelkowania</text>
+    <rect x="0" y="166" width="14" height="14" class="edge"/>
+    <text x="22" y="178" class="s">krawędzie: kafelkowane (domyślnie) albo</text>
+    <text x="22" y="192" class="s">rozciągane (hint-stretch-borders)</text>
+    <rect x="0" y="202" width="14" height="14" class="center"/>
+    <text x="22" y="214" class="s">środek: rozciągany (albo hint-tile-center)</text>
+    <text x="22" y="236" class="s">overlay: opcjonalny element na całą ramkę</text>
+    <text x="22" y="250" class="s">pozycje: arytmetyka KSvg co do piksela</text>
+
+    <text x="0" y="284" class="h">Stany (prefiksy elementów)</text>
+    <text x="0" y="304" class="m">decoration-*</text>
+    <text x="110" y="304" class="s">aktywne</text>
+    <text x="0" y="320" class="m">decoration-inactive-*</text>
+    <text x="170" y="320" class="s">→ decoration</text>
+    <text x="0" y="336" class="m">decoration-maximized-*</text>
+    <text x="176" y="336" class="s">→ decoration</text>
+    <text x="0" y="352" class="s">zmaksymalizowane: tylko center, bez paddingu</text>
+    <text x="0" y="366" class="s">i bez ramek bocznych</text>
+
+    <text x="0" y="400" class="h">Kolejność rysowania</text>
+    <text x="0" y="420" class="s">1. ramka (9 kawałków + overlay)  2. innerborder</text>
+    <text x="0" y="436" class="s">3. tytuł  4. przyciski (każdy to też FrameSvg</text>
+    <text x="0" y="450" class="s">z prefiksem stanu: active, hover, pressed…)</text>
+  </g>
+</svg>

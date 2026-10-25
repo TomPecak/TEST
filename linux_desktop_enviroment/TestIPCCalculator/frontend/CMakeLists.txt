@@ -7,7 +7,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Gui Quick Qml)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Gui Quick Qml ShaderTools)
 find_package(CapnProto REQUIRED)
 qt_standard_project_setup(REQUIRES 6.5)
 
@@ -36,6 +36,8 @@ qt_add_qml_module(test-calculator
         qml/Main.qml
         qml/LumenFace.qml
         qml/IPadFace.qml
+        qml/CyberFace.qml
+        qml/NeonBloom.qml
         qml/Theme.qml
         qml/TitleBar.qml
         qml/CalcButton.qml
@@ -51,7 +53,19 @@ qt_add_qml_module(test-calculator
         ${ICONS}
 )
 
+# Shaders of the neon bloom (CyberFace): GLSL compiled to .qsb at build time, in the resources as
+# :/shaders/<name>.qsb
+qt_add_shaders(test-calculator "neon_shaders"
+    PREFIX "/"
+    FILES
+        shaders/blur.frag
+        shaders/neon.frag
+)
+
 target_link_libraries(test-calculator PRIVATE
     Qt6::Gui Qt6::Quick Qt6::Qml
     CapnProto::capnp-rpc CapnProto::capnp CapnProto::kj-async CapnProto::kj
 )
+
+include(GNUInstallDirs)
+install(TARGETS test-calculator RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

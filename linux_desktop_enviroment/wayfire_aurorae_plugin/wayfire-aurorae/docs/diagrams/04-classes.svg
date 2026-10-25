@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 690" width="1180" height="690">
+  <style>
+    text { font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif; font-size: 12px; fill: #1f2937; }
+    .title { font-size: 17px; font-weight: bold; }
+    .n { font-family: "DejaVu Sans Mono", "Noto Sans Mono", monospace; font-size: 13px; font-weight: bold; }
+    .f { font-family: "DejaVu Sans Mono", "Noto Sans Mono", monospace; font-size: 10.5px; fill: #374151; }
+    .s { font-size: 11px; fill: #4b5563; }
+    .lbl { font-size: 10.5px; fill: #4b5563; font-style: italic; }
+    .wf { fill: #fff8f0; stroke: #d97a1f; stroke-width: 1.4; }
+    .core { fill: #f5f8ff; stroke: #3b6fd8; stroke-width: 1.4; }
+    .ext { fill: #f3f4f6; stroke: #8a919c; stroke-width: 1.4; }
+    .hr { stroke-width: 1; }
+    .own { stroke: #1f2937; stroke-width: 1.5; fill: none; marker-start: url(#dia); marker-end: url(#a); }
+    .ref { stroke: #6b7280; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; marker-end: url(#a); }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2937"/>
+    </marker>
+    <marker id="dia" viewBox="0 0 14 10" refX="13" refY="5" markerWidth="11" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,5 L7,0 L14,5 L7,10 z" fill="#1f2937"/>
+    </marker>
+  </defs>
+  <rect width="1180" height="690" fill="#ffffff"/>
+
+  <!-- header and legend -->
+  <text x="20" y="26" class="title">Klasy i własność</text>
+  <rect x="190" y="15" width="14" height="12" class="wf"/>
+  <text x="210" y="26" class="s">src/wayfire</text>
+  <rect x="290" y="15" width="14" height="12" class="core"/>
+  <text x="310" y="26" class="s">src/core</text>
+  <path d="M390,21 L428,21" class="own"/>
+  <text x="436" y="26" class="s">posiada (wartość, unique_ptr, shared_ptr właściciela)</text>
+  <path d="M760,21 L798,21" class="ref"/>
+  <text x="806" y="26" class="s">odwołuje się (wskaźnik, współdzielony shared_ptr)</text>
+
+  <!-- ===================== row 1 ===================== -->
+  <rect x="20" y="50" width="220" height="104" rx="5" class="wf"/>
+  <text x="32" y="70" class="n">AuroraePlugin</text>
+  <line x1="20" y1="78" x2="240" y2="78" stroke="#d97a1f" class="hr"/>
+  <text x="32" y="93" class="f">option_wrapper_t ×8</text>
+  <text x="32" y="107" class="f">ctx: shared_ptr&lt;Context&gt;</text>
+  <text x="32" y="121" class="f">on_new_tx → margins</text>
+  <text x="32" y="135" class="f">decorate(), undecorate()</text>
+  <text x="32" y="149" class="f">reconfigure()</text>
+
+  <rect x="270" y="50" width="260" height="104" rx="5" class="wf"/>
+  <text x="282" y="70" class="n">Context</text>
+  <text x="350" y="70" class="s">niezmienny snapshot</text>
+  <line x1="270" y1="78" x2="530" y2="78" stroke="#d97a1f" class="hr"/>
+  <text x="282" y="94" class="f">theme: shared_ptr&lt;const Theme&gt;</text>
+  <text x="282" y="108" class="f">settings: Settings</text>
+  <text x="282" y="122" class="f">icons: shared_ptr&lt;AppIcons&gt;</text>
+  <text x="282" y="144" class="s">nowe opcje = nowy Context</text>
+
+  <rect x="560" y="50" width="600" height="104" rx="5" class="core"/>
+  <text x="572" y="70" class="n">Theme</text>
+  <text x="626" y="70" class="s">jeden na motyw, współdzielony przez wszystkie okna</text>
+  <line x1="560" y1="78" x2="1160" y2="78" stroke="#3b6fd8" class="hr"/>
+  <text x="572" y="94" class="f">cfg: ThemeConfig  (metryki z pliku rc)</text>
+  <text x="572" y="108" class="f">frame_active, frame_inactive,</text>
+  <text x="572" y="122" class="f">frame_maximized(_inactive): FrameSvg</text>
+  <text x="572" y="136" class="f">inner_active, inner_inactive: FrameSvg?</text>
+  <text x="872" y="94" class="f">buttons[11]: optional&lt;ButtonAsset&gt;</text>
+  <text x="872" y="108" class="f">raster_cache: RasterCache (mutable)</text>
+  <text x="872" y="122" class="f">borders(size, factor)</text>
+  <text x="872" y="136" class="f">maximized_borders(factor)</text>
+
+  <!-- ===================== row 2 ===================== -->
+  <rect x="20" y="200" width="220" height="54" rx="5" class="ext"/>
+  <text x="32" y="220" class="n">wf::toplevel_t</text>
+  <text x="32" y="240" class="f">store_data&lt;Decorator&gt;()</text>
+
+  <rect x="560" y="194" width="180" height="104" rx="5" class="core"/>
+  <text x="572" y="214" class="n">FrameSvg</text>
+  <line x1="560" y1="222" x2="740" y2="222" stroke="#3b6fd8" class="hr"/>
+  <text x="572" y="238" class="f">doc: shared_ptr</text>
+  <text x="572" y="252" class="f">ids, sizes [10 kawałków]</text>
+  <text x="572" y="266" class="f">marginesy, hinty</text>
+  <text x="572" y="280" class="f">layout() → FramePiece</text>
+
+  <rect x="780" y="194" width="180" height="104" rx="5" class="core"/>
+  <text x="792" y="214" class="n">ButtonAsset</text>
+  <line x1="780" y1="222" x2="960" y2="222" stroke="#3b6fd8" class="hr"/>
+  <text x="792" y="238" class="f">normal: ButtonFrameSet</text>
+  <text x="792" y="252" class="f">restore: optional&lt;…&gt;</text>
+  <text x="792" y="266" class="f">FrameSvg × ≤8 stanów</text>
+  <text x="792" y="280" class="f">select(states)</text>
+
+  <rect x="1000" y="194" width="160" height="104" rx="5" class="core"/>
+  <text x="1012" y="214" class="n">RasterCache</text>
+  <line x1="1000" y1="222" x2="1160" y2="222" stroke="#3b6fd8" class="hr"/>
+  <text x="1012" y="238" class="f">map&lt;RasterKey,</text>
+  <text x="1022" y="252" class="f">unique_ptr&lt;Raster&gt;&gt;</text>
+  <text x="1012" y="266" class="f">get(key, factory)</text>
+
+  <!-- ===================== row 3 ===================== -->
+  <rect x="20" y="340" width="220" height="96" rx="5" class="wf"/>
+  <text x="32" y="360" class="n">Decorator</text>
+  <text x="112" y="360" class="s">: custom_data_t</text>
+  <line x1="20" y1="368" x2="240" y2="368" stroke="#d97a1f" class="hr"/>
+  <text x="32" y="384" class="f">node: shared_ptr</text>
+  <text x="32" y="398" class="f">connection_t ×10</text>
+  <text x="32" y="412" class="f">(sygnały widoku)</text>
+  <text x="32" y="426" class="f">margins(state)</text>
+
+  <rect x="270" y="340" width="260" height="214" rx="5" class="wf"/>
+  <text x="282" y="360" class="n">DecorationNode</text>
+  <line x1="270" y1="368" x2="530" y2="368" stroke="#d97a1f" class="hr"/>
+  <text x="282" y="384" class="s">: scene::node_t, pointer_interaction_t,</text>
+  <text x="290" y="398" class="s">touch_interaction_t</text>
+  <text x="282" y="416" class="f">weak_view: weak_ptr</text>
+  <text x="282" y="430" class="f">ctx: shared_ptr&lt;const Context&gt;</text>
+  <text x="282" y="444" class="f">state: WindowState</text>
+  <text x="282" y="458" class="f">geometry: DecorationGeometry</text>
+  <text x="282" y="472" class="f">pointer: vector&lt;ButtonPointerState&gt;</text>
+  <text x="282" y="486" class="f">scaled_items: map&lt;skala, {frame,</text>
+  <text x="296" y="500" class="f">buttons: vector&lt;DrawItem&gt;}&gt;</text>
+  <text x="282" y="514" class="f">captions: map&lt;skala, Caption&gt;</text>
+  <text x="282" y="532" class="f">update()  render()  find_node_at()</text>
+  <text x="282" y="546" class="f">handle_pointer_*  handle_touch_*</text>
+
+  <rect x="560" y="340" width="180" height="96" rx="5" class="core"/>
+  <text x="572" y="360" class="n">SvgDocument</text>
+  <line x1="560" y1="368" x2="740" y2="368" stroke="#3b6fd8" class="hr"/>
+  <text x="572" y="384" class="f">render_handle,</text>
+  <text x="572" y="398" class="f">measure_handle (rsvg)</text>
+  <text x="572" y="412" class="f">element_rect(id)</text>
+  <text x="572" y="426" class="f">render_element(id, px)</text>
+
+  <rect x="780" y="340" width="180" height="96" rx="5" class="wf"/>
+  <text x="792" y="360" class="n">GpuTexture</text>
+  <line x1="780" y1="368" x2="960" y2="368" stroke="#d97a1f" class="hr"/>
+  <text x="792" y="384" class="f">: RasterBackendData</text>
+  <text x="792" y="398" class="f">owned_texture_t</text>
+  <text x="792" y="416" class="s">tworzony przy 1. użyciu</text>
+  <text x="792" y="430" class="s">przez gpu_texture()</text>
+
+  <rect x="1000" y="340" width="160" height="214" rx="5" class="core"/>
+  <text x="1012" y="360" class="n">Raster</text>
+  <line x1="1000" y1="368" x2="1160" y2="368" stroke="#3b6fd8" class="hr"/>
+  <text x="1012" y="384" class="f">image: SurfacePtr</text>
+  <text x="1012" y="398" class="s">obraz cairo ARGB32;</text>
+  <text x="1012" y="412" class="s">kopia CPU zwalniana</text>
+  <text x="1012" y="426" class="s">po wgraniu do GPU</text>
+  <text x="1012" y="446" class="f">backend: unique_ptr</text>
+  <text x="1022" y="460" class="f">&lt;RasterBackendData&gt;</text>
+  <text x="1012" y="480" class="f">size()</text>
+  <text x="1012" y="494" class="f">surface()</text>
+  <text x="1012" y="508" class="f">release_cpu_copy()</text>
+
+  <!-- ===================== row 4 ===================== -->
+  <rect x="20" y="470" width="220" height="84" rx="5" class="wf"/>
+  <text x="32" y="490" class="n">RenderInstance</text>
+  <line x1="20" y1="498" x2="240" y2="498" stroke="#d97a1f" class="hr"/>
+  <text x="32" y="514" class="f">self: shared_ptr</text>
+  <text x="32" y="528" class="f">schedule_instructions()</text>
+  <text x="32" y="542" class="f">render()</text>
+
+  <rect x="560" y="470" width="400" height="84" rx="5" class="core"/>
+  <text x="572" y="490" class="n">DrawItem</text>
+  <text x="648" y="490" class="s">jeden quad — wspólny język core ↔ renderer</text>
+  <line x1="560" y1="498" x2="960" y2="498" stroke="#3b6fd8" class="hr"/>
+  <text x="572" y="514" class="f">raster: const Raster*</text>
+  <text x="572" y="528" class="f">src: RectF   (piksele rastra)</text>
+  <text x="572" y="542" class="f">dst: RectF   (piksele urządzenia)</text>
+
+  <!-- ===================== row 5 ===================== -->
+  <rect x="270" y="596" width="690" height="80" rx="5" class="core"/>
+  <text x="282" y="616" class="n">core — funkcje bez stanu</text>
+  <text x="484" y="616" class="s">wołane przez DecorationNode; dostają Theme i Settings z Context</text>
+  <line x1="270" y1="624" x2="960" y2="624" stroke="#3b6fd8" class="hr"/>
+  <text x="282" y="643" class="f">compute_geometry() → DecorationGeometry  ·  hit_test()  ·  render_caption()</text>
+  <text x="282" y="661" class="f">append_frame_items(), append_button_items() → vector&lt;DrawItem&gt;  ·  AppIcons::icon()</text>
+
+  <!-- ===================== relations ===================== -->
+  <!-- row 1 -->
+  <path d="M240,102 L267,102" class="own"/>
+  <path d="M530,102 L557,102" class="ref"/>
+  <!-- Theme owns its parts -->
+  <path d="M650,154 L650,191" class="own"/>
+  <path d="M870,154 L870,191" class="own"/>
+  <path d="M1080,154 L1080,191" class="own"/>
+  <!-- ButtonFrameSet holds FrameSvgs -->
+  <path d="M780,246 L743,246" class="own"/>
+  <!-- FrameSvg -> SvgDocument, RasterCache -> Raster -->
+  <path d="M650,298 L650,337" class="ref"/>
+  <text x="656" y="322" class="lbl">doc</text>
+  <path d="M1080,298 L1080,337" class="own"/>
+  <!-- Raster -> GpuTexture -->
+  <path d="M1000,388 L963,388" class="own"/>
+  <!-- Wayfire side -->
+  <path d="M130,254 L130,337" class="own"/>
+  <text x="138" y="300" class="lbl">custom data</text>
+  <path d="M240,388 L267,388" class="own"/>
+  <path d="M240,512 L267,512" class="ref"/>
+  <path d="M400,340 L400,157" class="ref"/>
+  <text x="406" y="250" class="lbl">ctx</text>
+  <!-- node -> draw items -> rasters -->
+  <path d="M530,512 L557,512" class="own"/>
+  <path d="M960,512 L997,512" class="ref"/>
+  <!-- node calls core functions -->
+  <path d="M400,554 L400,593" class="ref"/>
+  <text x="406" y="580" class="lbl">wywołuje</text>
+</svg>

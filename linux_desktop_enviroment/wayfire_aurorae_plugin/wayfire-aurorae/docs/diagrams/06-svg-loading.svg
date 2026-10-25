@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 546" width="1000" height="546">
+  <style>
+    text { font-family: "DejaVu Sans", "Noto Sans", Arial, sans-serif; font-size: 12px; fill: #1f2937; }
+    .title { font-size: 17px; font-weight: bold; }
+    .n { font-family: "DejaVu Sans Mono", monospace; font-size: 12px; font-weight: bold; }
+    .s { font-size: 11px; fill: #4b5563; }
+    .k { font-size: 11px; font-weight: bold; fill: #b45309; }
+    .box { fill: #ffffff; stroke: #3b6fd8; stroke-width: 1.4; }
+    .file { fill: #f3f4f6; stroke: #8a919c; stroke-width: 1.4; }
+    .meas { fill: #eef6ff; stroke: #3b6fd8; stroke-width: 1.4; }
+    .rend { fill: #f0faf3; stroke: #2f9e5a; stroke-width: 1.4; }
+    .arrow { stroke: #374151; stroke-width: 1.6; fill: none; marker-end: url(#a); }
+    .use { stroke: #6b7280; stroke-width: 1.3; fill: none; stroke-dasharray: 5 4; marker-end: url(#a); }
+  </style>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+    <path d="M0,0 L10,5 L0,10 z" fill="#374151"/></marker></defs>
+  <rect width="1000" height="546" fill="#ffffff"/>
+  <text x="20" y="28" class="title">SvgDocument::load — jeden plik, dwa dokumenty librsvg</text>
+  <text x="20" y="48" class="s">KSvg mierzy i rysuje elementy przez QtSvg. librsvg robi to inaczej, więc plik jest przerabiany tak, by wyniki były identyczne (liczby ① – ⑦ = poprawki).</text>
+
+  <rect x="20" y="168" width="120" height="70" rx="5" class="file"/>
+  <text x="32" y="190" class="n">close.svgz</text>
+  <text x="32" y="208" class="s">odczyt pliku,</text>
+  <text x="32" y="223" class="s">gunzip (GIO)</text>
+  <path d="M140,203 L170,203" class="arrow"/>
+
+  <rect x="173" y="128" width="230" height="150" rx="5" class="box"/>
+  <text x="185" y="148" class="n">parse_and_normalize()</text>
+  <text x="185" y="164" class="s">libxml2 DOM (NONET, bez encji)</text>
+  <text x="185" y="186" class="k">④</text><text x="200" y="186" class="s">odkryj przodków elementów</text>
+  <text x="200" y="200" class="s">motywu (display:none warstw)</text>
+  <text x="185" y="218" class="k">⑤</text><text x="200" y="218" class="s">usuń shape-rendering</text>
+  <text x="185" y="236" class="k">②</text><text x="200" y="236" class="s">&lt;image id&gt; → &lt;g id&gt;&lt;image/&gt;&lt;/g&gt;</text>
+  <text x="185" y="254" class="k">⑦</text><text x="200" y="254" class="s">image: preserveAspectRatio=none</text>
+
+  <!-- measure branch -->
+  <path d="M403,170 L430,170 L430,110 L455,110" class="arrow"/>
+  <rect x="458" y="70" width="230" height="96" rx="5" class="meas"/>
+  <text x="470" y="90" class="n">strip_for_measuring()</text>
+  <text x="470" y="106" class="s">na kopii (xmlCopyDoc)</text>
+  <text x="470" y="126" class="k">③</text><text x="485" y="126" class="s">usuń filter, clip-path, mask</text>
+  <text x="470" y="144" class="k">②</text><text x="485" y="144" class="s">&lt;image&gt; → &lt;rect&gt; tej samej</text>
+  <text x="485" y="158" class="s">geometrii</text>
+  <path d="M688,118 L716,118" class="arrow"/>
+  <rect x="719" y="70" width="262" height="120" rx="5" class="meas"/>
+  <text x="731" y="90" class="n">measure_handle</text>
+  <text x="731" y="110" class="s">element_rect(id) = ink rect warstwy</text>
+  <text x="731" y="124" class="s">(get_geometry_for_layer), memo;</text>
+  <text x="731" y="138" class="s">pusty → element sam ukryty: bounds</text>
+  <text x="731" y="152" class="s">„w izolacji” (jak Qt dla hint-*)</text>
+  <text x="731" y="172" class="k">①</text><text x="746" y="172" class="s">jednostki = px dokumentu (viewBox</text>
+  <text x="746" y="184" class="s">przeskalowany) — tak samo jak Qt</text>
+
+  <!-- render branch -->
+  <path d="M403,240 L430,240 L430,330 L455,330" class="arrow"/>
+  <rect x="458" y="282" width="230" height="96" rx="5" class="rend"/>
+  <text x="470" y="302" class="n">grow_canvas()</text>
+  <text x="470" y="322" class="k">⑥</text><text x="485" y="322" class="s">płótno = cała treść + zapas</text>
+  <text x="485" y="336" class="s">na filtry, zaokrąglone do px;</text>
+  <text x="485" y="350" class="s">zapamiętaj render_offset</text>
+  <text x="485" y="368" class="s">(librsvg obcina do płótna)</text>
+  <path d="M688,330 L716,330" class="arrow"/>
+  <rect x="719" y="282" width="262" height="120" rx="5" class="rend"/>
+  <text x="731" y="302" class="n">render_handle</text>
+  <text x="731" y="322" class="s">render_element(id, rozmiar px):</text>
+  <text x="731" y="338" class="s">cairo: scale(px / rect),</text>
+  <text x="731" y="352" class="s">translate(−(rect + offset)),</text>
+  <text x="731" y="366" class="s">rsvg_handle_render_layer(id)</text>
+  <text x="731" y="386" class="s">→ element dokładnie wypełnia obraz</text>
+  <path d="M850,190 L850,279" class="use"/>
+  <text x="858" y="240" class="s">rect elementu</text>
+  <path d="M719,180 L600,180 L600,279" class="use"/>
+  <text x="606" y="230" class="s">zasięg treści</text>
+
+  <!-- table -->
+  <rect x="20" y="420" width="960" height="114" rx="5" fill="#fffbeb" stroke="#f59e0b"/>
+  <text x="32" y="440" class="n">Różnice librsvg ↔ QtSvg, które to kompensuje</text>
+  <text x="32" y="460" class="s"><tspan class="k">①</tspan> geometria w px dokumentu — zgodna z Qt (sprawdzone z KWin)</text>
+  <text x="32" y="476" class="s"><tspan class="k">②</tspan> &lt;image&gt; nie wchodzi do ink rect, a jego logical rect ignoruje własny transform</text>
+  <text x="32" y="492" class="s"><tspan class="k">③</tspan> ink rect librsvg obejmuje obszar filtrów i uwzględnia clip/mask; bounds w Qt nie</text>
+  <text x="32" y="508" class="s"><tspan class="k">④</tspan> Qt rysuje element nawet w ukrytej grupie (warstwa Inkscape), librsvg nie</text>
+  <text x="520" y="460" class="s"><tspan class="k">⑤</tspan> crispEdges: librsvg przyciąga geometrię do pikseli, Qt ignoruje</text>
+  <text x="520" y="476" class="s"><tspan class="k">⑥</tspan> render_layer obcina do płótna; Qt rysuje elementy poza kartką</text>
+  <text x="520" y="492" class="s"><tspan class="k">⑦</tspan> Qt rozciąga &lt;image&gt; do width×height, librsvg trzyma proporcje</text>
+  <text x="520" y="508" class="s">Bez poprawek: przesunięte o ułamek piksela kafelki, ucięte cienie,</text>
+  <text x="520" y="522" class="s">złe marginesy i niewidoczne przyciski z osadzonych PNG.</text>
+</svg>
